@@ -7,6 +7,6 @@ ROUNDS = 11 <br>
 SECRET = 1011
 
 
-frontend envs /n
-NEXT_PUBLIC_API = http://localhost:4000 /n
+frontend envs <br>
+NEXT_PUBLIC_API = http://localhost:4000 <br>
 NEXT_PUBLIC_GOOGLE_CLIENT_ID = "834033414607-pviv6b74km3rmpan7uet4er7lb09niqv.apps.googleusercontent.com"
