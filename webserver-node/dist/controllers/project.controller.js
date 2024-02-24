@@ -50,6 +50,7 @@ const getProjects = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.status(200).json({ status: true, data: projects });
     }
     catch (err) {
+        console.log(err);
         res.status(500).json({ status: false, error: "Error getting projects" });
     }
 });
@@ -112,7 +113,9 @@ exports.deleteService = deleteService;
 const getService = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _c, _d, _e, _f, _g;
     try {
-        const { userId, name } = req.body;
+        const { userId } = req.body;
+        const name = req.params.name || "";
+        const { Servicetype } = req.query; // Ensure Servicetype is of type string
         const serviceInfo = yield (0, kube_controller_1.getPodInfo)(userId, name);
         console.log(serviceInfo);
         //@ts.ignore

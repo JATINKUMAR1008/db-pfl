@@ -32,6 +32,7 @@ export const getProjects = async (req: Request, res: Response) => {
     });
     res.status(200).json({ status: true, data: projects });
   } catch (err) {
+    console.log(err)
     res.status(500).json({ status: false, error: "Error getting projects" });
   }
 };
@@ -99,7 +100,9 @@ export const deleteService = async (req: Request, res: Response) => {
 
 export const getService = async (req: Request, res: Response) => {
   try {
-    const { userId, name } = req.body;
+    const { userId} = req.body;
+    const name = req.params.name || ""
+    const { Servicetype } = req.query as { Servicetype: string }; // Ensure Servicetype is of type string
     const serviceInfo = await getPodInfo(userId, name);
     console.log(serviceInfo);
     //@ts.ignore
@@ -124,4 +127,3 @@ export const getService = async (req: Request, res: Response) => {
     res.status(500).json({ status: false, error: "Error getting service" });
   }
 };
-

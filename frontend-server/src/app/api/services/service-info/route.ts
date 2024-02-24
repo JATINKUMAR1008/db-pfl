@@ -1,10 +1,11 @@
-import { createService } from "@/utlis/project";
+import { createService, getService } from "@/utlis/project";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest) => {
   const body = await req.json();
   const token = req.cookies.get("token")?.value || "";
-  const data = await createService(body, token);
+  const data = await getService(token,body.name);
+  console.log(data)
   if (!data.status) {
     return NextResponse.json({
       status: false,
@@ -13,6 +14,6 @@ export const POST = async (req: NextRequest) => {
   }
   return NextResponse.json({
     status: true,
-    message: "Service created successfully",
+    data,
   });
 };

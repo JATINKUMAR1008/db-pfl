@@ -154,7 +154,7 @@ const ProjectDropDown = () => {
         {projects?.length === 0 ? (
           <div>No projects till now</div>
         ) : (
-          projects.map((project) => (
+          projects?.map((project) => (
             <div
               className=" p-2 w-full hover:bg-gray-100 text-xs text-gray-500 cursor-pointer rounded-sm duration-75 ease-in-out"
               key={project.id}

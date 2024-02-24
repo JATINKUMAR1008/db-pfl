@@ -22,13 +22,12 @@ export const getProjects = async (token: string) => {
   return data;
 };
 export const getService = async (token: string, name: string) => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API}/project/service`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API}/project/service/${name}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
       Authorization: `${token}`,
     },
-    body: JSON.stringify({ name }),
   });
   const data = await res.json();
   return data;

@@ -42,6 +42,6 @@ model Service {
   cloud     String
   type      String
   status    String   @default("running")
-  user      String
-  password  String
+  dbUser    String    @default("admin")
+  password  String?
 }

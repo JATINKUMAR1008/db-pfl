@@ -3,6 +3,10 @@ import Button from "@/components/button";
 import { useAuth } from "@/providers/auth-provider";
 import Image from "next/image";
 import { useQuery } from "react-query";
+import { LuClipboard } from "react-icons/lu";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { nodeButton } from "@/components/services/service-table";
 
 interface IPageProps {
   params: {
@@ -17,8 +21,11 @@ export default function ServicePage({ params }: IPageProps) {
   const services = projects?.find(
     (project) => project.id === Number(params.slug)
   )?.services;
+  const service = services?.find(
+    (service) => service.id === Number(params.service_id)
+  );
   return (
-    services && (
+    services&&service && (
       <div className="mt-5 max-w-[1200px] m-auto">
         <ServiceInfoCard service_id={params.service_id} services={services} />
         <div className="mt-7 w-full border-2 border-gray-200">
@@ -31,7 +38,7 @@ export default function ServicePage({ params }: IPageProps) {
             </Button>
           </div>
           <div className="w-full h-full flex flex-col items-start mt-2 py-2 px-3">
-            <RenderServiceInfo />
+            <RenderServiceInfo name={service?.name} />
           </div>
         </div>
       </div>
@@ -108,8 +115,9 @@ const ServiceInfoCard = ({ services, service_id }: IProps) => {
           height={80}
           alt={service.name}
         />
-        <div className="flex flex-col items-start text-black py-2">
-          <p className="text-bold text-lg">{service.name}</p>
+        <div className="flex flex-col items-start text-black py-2 gap-1">
+          <p className="text-bold text-xl">{service.name}</p>
+          <Render_info_Buttons/>
         </div>
       </div>
     )
@@ -117,15 +125,27 @@ const ServiceInfoCard = ({ services, service_id }: IProps) => {
 };
 
 
-const Render_info_Buttons = () =>{
-  return(
-    <div className="flex flex-row w-full">
-      <div className="bg-[#F7F7FA] text-xs">
-
-      </div>
+const statusButton = (status: string) => {
+  return (
+    <div
+      className={`rounded-md px-2 py-1 text-white ${
+        status === "active" ? "bg-green-100 text-green-700" : "bg-red-500 text-red-700"
+      }`}
+    >
+      <p
+      className={status === "active" ? "bg-green-100 text-xs text-green-700" : "bg-red-500 text-xs text-red-700"}>{status}</p>
     </div>
-  )
+  );
+
 }
+const Render_info_Buttons = () => {
+  return (
+    <div className="flex flex-row w-full gap-2">
+      {statusButton("active")}
+      {nodeButton(1)}
+    </div>
+  );
+};
 
 const SERVICE_INFO_KEYS = [
   { key: "service_uri", desc: "Service URL" },
@@ -136,29 +156,46 @@ const SERVICE_INFO_KEYS = [
   { key: "service_database_name", desc: "Database name" },
 ];
 
-const RenderServiceInfo = () => {
-  const { data } = useQuery("service_info", () => {
-    return fetch("/api/service/get").then((res) => res.json());
+const RenderServiceInfo = ({ name }: { name: string }) => {
+  const [isCopied, setIsCopied] = useState(false);
+  const { data } = useQuery({
+    queryKey: "service_info",
+    queryFn: async () => {
+      return fetch("/api/services/service-info", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({name}),
+      }).then((res) => res.json());
+    },
   });
   return (
-    <>
-      {SERVICE_INFO_KEYS.map((key, index) => (
-        <div
-          className={
-            index === SERVICE_INFO_KEYS.length - 1
-              ? "w-full grid grid-cols-3 py-3 px-3"
-              : "w-full grid grid-cols-3 py-3 px-3 border-b"
-          }
-          key={index}
-        >
-          <div className="w-full col-span-1">
-            <p className="text-black text-md font-[500]">{key.desc}</p>
+    (
+      <>
+        {SERVICE_INFO_KEYS.map((key, index) => (
+          <div
+            className={
+              index === SERVICE_INFO_KEYS.length - 1
+                ? "w-full grid grid-cols-3 py-3 px-3"
+                : "w-full grid grid-cols-3 py-3 px-3 border-b"
+            }
+            key={index}
+          >
+            <div className="w-full col-span-1">
+              <p className="text-gray-700 text-md font-[500]">{key.desc}</p>
+            </div>
+            <div className="w-full col-span-2 flex justify-between items-center">
+              <p className="text-gray-600 ">{data?.data?.data[key.key]}</p>
+              <LuClipboard size={20} className="text-gray-400 cursor-pointer" onClick={()=>{
+                navigator.clipboard.writeText(data?.data?.data[key.key])
+                toast.success("Copied to clipboard")
+              }}/>
+              
+            </div>
           </div>
-          <div className="w-full col-span-2">
-            <p className="text-gray-400 ">{key.key}</p>
-          </div>
-        </div>
-      ))}
-    </>
+        ))}
+      </>
+    )
   );
 };

@@ -10,4 +10,4 @@ exports.projectRouter.get("/get", auth_middleware_1.validateAuthToken, project_c
 exports.projectRouter.post("/create-service", auth_middleware_1.validateAuthToken, project_controller_1.createService);
 exports.projectRouter.delete("/delete-service", auth_middleware_1.validateAuthToken, project_controller_1.deleteService);
 exports.projectRouter.delete("/", auth_middleware_1.validateAuthToken, project_controller_1.deleteProject);
-exports.projectRouter.get("/service", auth_middleware_1.validateAuthToken, project_controller_1.getService);
+exports.projectRouter.get("/service/:name", auth_middleware_1.validateAuthToken, project_controller_1.getService);

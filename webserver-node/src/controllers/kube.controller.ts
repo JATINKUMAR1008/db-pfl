@@ -12,7 +12,7 @@ const SERVICE_MATCHER = {
 
 const kubeClient = new K8s.KubeConfig();
 try {
-  kubeClient.loadFromFile(`${process.env.HOME}/.kube/konfig`);
+  kubeClient.loadFromFile(`${process.env.HOME}/.kube/config`);
 } catch (err) {
   console.error(err);
 }

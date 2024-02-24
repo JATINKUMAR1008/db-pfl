@@ -81,9 +81,9 @@ const cloud_matcher = {
   },
 };
 
-const nodeButton = (node_number: number) => {
+export const nodeButton = (node_number: number) => {
   return (
-    <p className="bg-gray-100 w-full max-w-[110px] gap-2 py-1 px-3 text-xs flex flex-row items-center text-gray-600">
+    <p className="bg-green-100 w-full max-w-[110px] gap-2 py-1 px-3 text-xs flex flex-row items-center text-gray-600">
       <BsFillHddStackFill size={10} />
       <span>Nodes </span>
       <span className="w-5 h-5 rounded-full text-[.6rem] bg-green-700 flex items-center justify-center text-white">

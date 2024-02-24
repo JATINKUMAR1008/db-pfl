@@ -15,4 +15,4 @@ projectRouter.get("/get", validateAuthToken, getProjects);
 projectRouter.post("/create-service", validateAuthToken, createService);
 projectRouter.delete("/delete-service", validateAuthToken, deleteService);
 projectRouter.delete("/", validateAuthToken, deleteProject);
-projectRouter.get("/service", validateAuthToken, getService);
+projectRouter.get("/service/:name", validateAuthToken, getService);
