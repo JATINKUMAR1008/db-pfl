@@ -3,7 +3,7 @@ import Input from "@/components/commons/input";
 import Label from "@/components/commons/label";
 import Image from "next/image";
 import Link from "next/link";
-import RegForm from "./components/form";
+import RegForm from "../../../components/forms/form";
 
 export default function RegisterPage() {
   return (

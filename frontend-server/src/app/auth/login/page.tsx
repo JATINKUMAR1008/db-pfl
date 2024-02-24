@@ -1,6 +1,6 @@
 import Image from "next/image";
 import svgImg from "../../../../public/undraw_maintenance_re_59vn.svg";
-import LoginForm from "./components/loginForm";
+import LoginForm from "../../../components/forms/loginForm";
 export default function LoginPage() {
   return (
     <div className="w-full h-screen flex justify-center items-center flex-col bg-blue-950">
