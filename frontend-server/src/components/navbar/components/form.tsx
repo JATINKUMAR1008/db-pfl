@@ -44,7 +44,7 @@ export default function CreateProjectForm({
           placeholder="Enter your Project name"
           name="name"
           value={formik.values.name}
-          onChange={formik.handleChange}
+          onChange={formik.handleChange} 
         />
       </div>
 
