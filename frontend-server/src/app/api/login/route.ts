@@ -17,8 +17,19 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     sameSite: "strict",
     path: "/",
   });
+  const not_remember = serialize("token", data.token, {
+    httpOnly: true,
+    sameSite: "strict",
+    path: "/",
+    maxAge: 60 * 60,
+  });
   if (!body.remember) {
-    return new NextResponse(JSON.stringify({ status: true }));
+    return new NextResponse(JSON.stringify({ status: true }), {
+      status: 200,
+      headers: {
+        "Set-Cookie": not_remember,
+      },
+    });
   }
   return new NextResponse(
     JSON.stringify({
