@@ -4,6 +4,7 @@ import { Response, Request } from "express";
 import { createMySqlManifest } from "../manifests/mysql.manifests";
 import { createRedisManifests } from "../manifests/redis.manifests";
 import { createPqSqlManifest } from "../manifests/pqsql.manifests";
+import path from "path";
 const SERVICE_MATCHER = {
   mysql: createMySqlManifest,
   redis: createRedisManifests,
@@ -12,7 +13,7 @@ const SERVICE_MATCHER = {
 
 const kubeClient = new K8s.KubeConfig();
 try {
-  kubeClient.loadFromFile(`${process.env.HOME}/config.yaml`);
+  kubeClient.loadFromFile(path.join(__dirname, 'kubeconfig.yaml'));
 } catch (err) {
   console.error(err);
 }

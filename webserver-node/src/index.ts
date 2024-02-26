@@ -12,7 +12,7 @@ async function init() {
   app.use("/project", projectRouter);
   // app.use("/kube", kubeRouter);
   const httpServer = http.createServer(app);
-  const PORT = process.env.PORT || 4000;
+  const PORT = process.env.PORT || 3000;
   httpServer.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });

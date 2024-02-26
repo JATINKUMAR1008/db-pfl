@@ -108,6 +108,7 @@ export const loginProvider = async (req: Request, res: Response) => {
         where: { id: user.id },
         data: { refreshToken: token },
       });
+
       return res.json({ status: true, token });
     } else {
       const new_user = await prisma.user.create({
@@ -128,6 +129,7 @@ export const loginProvider = async (req: Request, res: Response) => {
         where: { id: new_user.id },
         data: { refreshToken: token },
       });
+      createNamespace(new_user.id.toString());
       res.json({ status: true, token });
     }
   } catch (error) {

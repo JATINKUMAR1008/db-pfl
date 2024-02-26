@@ -1,0 +1,8 @@
+FROM node:alpine
+COPY . .
+RUN yarn
+ENV DATABASE_URL = "mysql://avnadmin:AVNS_8P_iCQjlNFRvPDgF0Ww@mysql-80a953-jatinkumar10082003-0747.a.aivencloud.com:16093/defaultdb?ssl-mode=REQUIRED"
+ENV PORT = 4000
+ENV ROUNDS = 11
+ENV SECRET = 1011
+CMD ["yarn", "start"]

@@ -31,12 +31,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deletePodfn = exports.createPodfn = exports.getPodInfo = exports.createNamespace = exports.getPodsfn = void 0;
 const K8s = __importStar(require("@kubernetes/client-node"));
 const mysql_manifests_1 = require("../manifests/mysql.manifests");
 const redis_manifests_1 = require("../manifests/redis.manifests");
 const pqsql_manifests_1 = require("../manifests/pqsql.manifests");
+const path_1 = __importDefault(require("path"));
 const SERVICE_MATCHER = {
     mysql: mysql_manifests_1.createMySqlManifest,
     redis: redis_manifests_1.createRedisManifests,
@@ -44,7 +48,7 @@ const SERVICE_MATCHER = {
 };
 const kubeClient = new K8s.KubeConfig();
 try {
-    kubeClient.loadFromFile(`${process.env.HOME}/config.yaml`);
+    kubeClient.loadFromFile(path_1.default.join(__dirname, 'kubeconfig.yaml'));
 }
 catch (err) {
     console.error(err);
