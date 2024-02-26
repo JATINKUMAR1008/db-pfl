@@ -25,7 +25,8 @@ export default function ServicePage({ params }: IPageProps) {
     (service) => service.id === Number(params.service_id)
   );
   return (
-    services&&service && (
+    services &&
+    service && (
       <div className="mt-5 max-w-[1200px] m-auto">
         <ServiceInfoCard service_id={params.service_id} services={services} />
         <div className="mt-7 w-full border-2 border-gray-200">
@@ -38,7 +39,10 @@ export default function ServicePage({ params }: IPageProps) {
             </Button>
           </div>
           <div className="w-full h-full flex flex-col items-start mt-2 py-2 px-3">
-            <RenderServiceInfo name={service?.name} />
+            <RenderServiceInfo
+              name={service?.name}
+              serviceType={service?.type}
+            />
           </div>
         </div>
       </div>
@@ -117,27 +121,34 @@ const ServiceInfoCard = ({ services, service_id }: IProps) => {
         />
         <div className="flex flex-col items-start text-black py-2 gap-1">
           <p className="text-bold text-xl">{service.name}</p>
-          <Render_info_Buttons/>
+          <Render_info_Buttons />
         </div>
       </div>
     )
   );
 };
 
-
 const statusButton = (status: string) => {
   return (
     <div
       className={`rounded-md px-2 py-1 text-white ${
-        status === "active" ? "bg-green-100 text-green-700" : "bg-red-500 text-red-700"
+        status === "active"
+          ? "bg-green-100 text-green-700"
+          : "bg-red-500 text-red-700"
       }`}
     >
       <p
-      className={status === "active" ? "bg-green-100 text-xs text-green-700" : "bg-red-500 text-xs text-red-700"}>{status}</p>
+        className={
+          status === "active"
+            ? "bg-green-100 text-xs text-green-700"
+            : "bg-red-500 text-xs text-red-700"
+        }
+      >
+        {status}
+      </p>
     </div>
   );
-
-}
+};
 const Render_info_Buttons = () => {
   return (
     <div className="flex flex-row w-full gap-2">
@@ -156,7 +167,13 @@ const SERVICE_INFO_KEYS = [
   { key: "service_database_name", desc: "Database name" },
 ];
 
-const RenderServiceInfo = ({ name }: { name: string }) => {
+const RenderServiceInfo = ({
+  name,
+  serviceType,
+}: {
+  name: string;
+  serviceType: string;
+}) => {
   const [isCopied, setIsCopied] = useState(false);
   const { data } = useQuery({
     queryKey: "service_info",
@@ -166,36 +183,37 @@ const RenderServiceInfo = ({ name }: { name: string }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({name}),
+        body: JSON.stringify({ name }),
       }).then((res) => res.json());
     },
   });
   return (
-    (
-      <>
-        {SERVICE_INFO_KEYS.map((key, index) => (
-          <div
-            className={
-              index === SERVICE_INFO_KEYS.length - 1
-                ? "w-full grid grid-cols-3 py-3 px-3"
-                : "w-full grid grid-cols-3 py-3 px-3 border-b"
-            }
-            key={index}
-          >
-            <div className="w-full col-span-1">
-              <p className="text-gray-700 text-md font-[500]">{key.desc}</p>
-            </div>
-            <div className="w-full col-span-2 flex justify-between items-center">
-              <p className="text-gray-600 ">{data?.data?.data[key.key]}</p>
-              <LuClipboard size={20} className="text-gray-400 cursor-pointer" onClick={()=>{
-                navigator.clipboard.writeText(data?.data?.data[key.key])
-                toast.success("Copied to clipboard")
-              }}/>
-              
-            </div>
+    <>
+      {SERVICE_INFO_KEYS.map((key, index) => (
+        <div
+          className={
+            index === SERVICE_INFO_KEYS.length - 1
+              ? "w-full grid grid-cols-3 py-3 px-3"
+              : "w-full grid grid-cols-3 py-3 px-3 border-b"
+          }
+          key={index}
+        >
+          <div className="w-full col-span-1">
+            <p className="text-gray-700 text-md font-[500]">{key.desc}</p>
           </div>
-        ))}
-      </>
-    )
+          <div className="w-full col-span-2 flex justify-between items-center">
+            <p className="text-gray-600 ">{data?.data?.data[key.key]}</p>
+            <LuClipboard
+              size={20}
+              className="text-gray-400 cursor-pointer"
+              onClick={() => {
+                navigator.clipboard.writeText(data?.data?.data[key.key]);
+                toast.success("Copied to clipboard");
+              }}
+            />
+          </div>
+        </div>
+      ))}
+    </>
   );
 };
