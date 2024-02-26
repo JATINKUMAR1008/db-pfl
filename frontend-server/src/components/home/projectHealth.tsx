@@ -146,13 +146,13 @@ const ProjectSearchDropdown = ({
 
 const ShowProjectHealth = () => {
   return (
-    <div className="w-full border-dotted border-gray-100 px-4 y-2">
-      <div className="flex flex-row">
+    <div className="w-full border-dotted border border-gray-500 mt-6 px-4 py-2">
+      <div className="flex flex-row items-center gap-3">
         <Image
           src="data:image/svg+xml,%3csvg width='140' height='140' viewBox='0 0 140 140' fill='none' xmlns='http://www.w3.org/2000/svg'%3e %3cg id='Illustration' clip-path='url(%23clip0_6506_163990)'%3e %3crect width='140' height='140' fill='white'/%3e %3cpath id='Vector' opacity='0.24' d='M100.563 140.102C122.344 140.102 140 122.445 140 100.665C140 78.8849 122.344 61.2285 100.563 61.2285C78.7832 61.2285 61.1268 78.8849 61.1268 100.665C61.1268 122.445 78.7832 140.102 100.563 140.102Z' fill='%23FF5200' fill-opacity='0.16'/%3e %3cpath id='Vector_2' d='M42.2858 0H85.1136V42.8279C85.1136 66.166 66.166 85.1136 42.8279 85.1136H0V42.2858C0 18.9476 18.9476 0 42.2858 0Z' fill='%23FF5200' fill-opacity='0.16'/%3e %3cpath id='Icon' d='M120 65.4286V70.0286C119.994 80.8107 116.502 91.302 110.047 99.9377C103.591 108.573 94.5164 114.891 84.1768 117.948C73.8371 121.005 62.7863 120.638 52.6723 116.902C42.5584 113.165 33.9233 106.259 28.0548 97.2139C22.1863 88.1688 19.399 77.4689 20.1084 66.7102C20.8178 55.9514 24.986 45.7102 31.9914 37.514C38.9968 29.3177 48.4639 23.6055 58.9809 21.2293C69.498 18.8532 80.5013 19.9403 90.35 24.3286M120 30L70 80.05L55 65.05' stroke='%23FF5200' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3e %3c/g%3e %3cdefs%3e %3cclipPath id='clip0_6506_163990'%3e %3crect width='140' height='140' fill='white'/%3e %3c/clipPath%3e %3c/defs%3e %3c/svg%3e"
           alt="image"
-          width={60}
-          height={60}
+          width={150}
+          height={150}
         />
         <div className="flex flex-col items-start gap-3">
           <h1 className="text-xl font-bold text-gray-800">
