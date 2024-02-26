@@ -5,6 +5,9 @@ import { useEffect, useState } from "react";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import { MdFolderOpen } from "react-icons/md";
 import { useQuery } from "react-query";
+import Button from "../button";
+import ModalBox from "../modal/modal";
+import CreateProjectForm from "../navbar/components/form";
 
 interface IProjectData {
   name: string;
@@ -16,6 +19,7 @@ interface IProjectData {
 export default function RecentProjects() {
   const { projects } = useAuth();
   const router = useRouter();
+  const [openCreateProjectModal, setOpenCreateProjectModal] = useState(false);
   return (
     <div className="flex flex-col mt-2">
       <div className="flex flex-row items-center justify-between">
@@ -31,8 +35,26 @@ export default function RecentProjects() {
       </div>
       <div className="flex flex-wrap w-full h-full gap-3 mt-5">
         {projects?.length === 0 ? (
-          <div className="text-gray-500 text-center w-full">
-            No projects found
+          <div className="text-gray-500 text-center w-full flex gap-3 items-center">
+            <p>No project found </p>
+            <Button
+              type="button"
+              onClick={() => setOpenCreateProjectModal(!openCreateProjectModal)}
+              className="bg-blue-950 text-white p-3 rounded-sm"
+            >
+              Create New Project
+            </Button>
+            {openCreateProjectModal && (
+              <ModalBox
+                onClose={() => setOpenCreateProjectModal(false)}
+                title="Create Project"
+                description="create new project with your might"
+              >
+                <CreateProjectForm
+                  onClose={() => setOpenCreateProjectModal(false)}
+                />
+              </ModalBox>
+            )}
           </div>
         ) : (
           projects?.map((project) => (
