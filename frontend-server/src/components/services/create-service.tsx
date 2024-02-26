@@ -96,7 +96,7 @@ export default function CreateNewTypeService({
     console.log(res);
     setLoading(false);
   };
-  return (
+  return serviceType === "mysql" || "pqsql" || "redis" ? (
     <div className="max-w-[1500px] w-full m-auto h-full">
       <div className="flex flex-row items-start w-full gap-2">
         <div className="w-full">
@@ -224,6 +224,10 @@ export default function CreateNewTypeService({
           </div>
         </div>
       </div>
+    </div>
+  ) : (
+    <div className="flex w-full h-full justify-start items-center">
+      <h1 className="text-2xl text-black">Currently Working on it.</h1>
     </div>
   );
 }
