@@ -58,7 +58,7 @@ export const createPqSqlManifest = (
             targetPort: 5432,
           },
         ],
-        type: "NodePort",
+        type: "LoadBalancer",
       },
     },
   };

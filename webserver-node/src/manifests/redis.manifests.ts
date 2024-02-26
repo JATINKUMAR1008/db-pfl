@@ -19,10 +19,20 @@ export const createRedisManifests = (
             name: "redis",
             image: "redis:latest",
             command: ["redis-server"],
-            args: ["--requirepass", password],
+            args: ["--requirepass", "${REDIS_PASSWORD}"],
             ports: [
               {
                 containerPort: 6379,
+              },
+            ],
+            env: [
+              {
+                name: "REDIS_PASSWORD",
+                value: password,
+              },
+              {
+                name: "REDIS_USER",
+                value: "default",
               },
             ],
           },
@@ -46,7 +56,7 @@ export const createRedisManifests = (
             targetPort: 6379,
           },
         ],
-        type: "NodePort",
+        type: "LoadBalancer",
       },
     },
   };

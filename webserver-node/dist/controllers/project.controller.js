@@ -111,10 +111,10 @@ const deleteService = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.deleteService = deleteService;
 const getService = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c, _d, _e, _f, _g;
     try {
         const { userId } = req.body;
         const name = req.params.name || "";
+        const { serviceType } = req.query;
         const { Servicetype } = req.query; // Ensure Servicetype is of type string
         const serviceInfo = yield (0, kube_controller_1.getPodInfo)(userId, name);
         console.log(serviceInfo);
@@ -123,17 +123,10 @@ const getService = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             throw new Error("got error");
         }
         else {
-            const sendableInfo = {
-                service_uri: `mysql://${((_c = serviceInfo === null || serviceInfo === void 0 ? void 0 : serviceInfo.pod) === null || _c === void 0 ? void 0 : _c.podEnv) && (serviceInfo === null || serviceInfo === void 0 ? void 0 : serviceInfo.pod.podEnv[2].MYSQL_PASSWORD)}@${serviceInfo.service.serviceIP}:${serviceInfo.service.servicePort}/${((_d = serviceInfo === null || serviceInfo === void 0 ? void 0 : serviceInfo.pod) === null || _d === void 0 ? void 0 : _d.podEnv) && serviceInfo.pod.podEnv[3].MYSQL_DATABASE}`,
-                service_port: serviceInfo.service.servicePort,
-                service_host: serviceInfo.service.serviceIP,
-                service_username: ((_e = serviceInfo === null || serviceInfo === void 0 ? void 0 : serviceInfo.pod) === null || _e === void 0 ? void 0 : _e.podEnv) && serviceInfo.pod.podEnv[1].MYSQL_USER,
-                service_password: ((_f = serviceInfo === null || serviceInfo === void 0 ? void 0 : serviceInfo.pod) === null || _f === void 0 ? void 0 : _f.podEnv) && serviceInfo.pod.podEnv[2].MYSQL_PASSWORD,
-                service_database_name: ((_g = serviceInfo === null || serviceInfo === void 0 ? void 0 : serviceInfo.pod) === null || _g === void 0 ? void 0 : _g.podEnv) && serviceInfo.pod.podEnv[3].MYSQL_DATABASE,
-            };
+            const sendableInfo = SERVICE_MATCHER[serviceType](serviceInfo);
             res.status(200).json({
                 status: serviceInfo.pod.status,
-                data: sendableInfo
+                data: sendableInfo,
             });
         }
     }
@@ -142,3 +135,39 @@ const getService = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.getService = getService;
+const SERVICE_MATCHER = {
+    mysql: (serviceInfo) => {
+        var _a, _b, _c, _d, _e;
+        return ({
+            service_uri: `mysql://${((_a = serviceInfo === null || serviceInfo === void 0 ? void 0 : serviceInfo.pod) === null || _a === void 0 ? void 0 : _a.podEnv) && (serviceInfo === null || serviceInfo === void 0 ? void 0 : serviceInfo.pod.podEnv[2].MYSQL_PASSWORD)}@${serviceInfo.service.serviceIP}:${serviceInfo.service.servicePort}/${((_b = serviceInfo === null || serviceInfo === void 0 ? void 0 : serviceInfo.pod) === null || _b === void 0 ? void 0 : _b.podEnv) && serviceInfo.pod.podEnv[3].MYSQL_DATABASE}`,
+            service_port: serviceInfo.service.servicePort,
+            service_host: serviceInfo.service.serviceIP,
+            service_username: ((_c = serviceInfo === null || serviceInfo === void 0 ? void 0 : serviceInfo.pod) === null || _c === void 0 ? void 0 : _c.podEnv) && serviceInfo.pod.podEnv[1].MYSQL_USER,
+            service_password: ((_d = serviceInfo === null || serviceInfo === void 0 ? void 0 : serviceInfo.pod) === null || _d === void 0 ? void 0 : _d.podEnv) && serviceInfo.pod.podEnv[2].MYSQL_PASSWORD,
+            service_database_name: ((_e = serviceInfo === null || serviceInfo === void 0 ? void 0 : serviceInfo.pod) === null || _e === void 0 ? void 0 : _e.podEnv) && serviceInfo.pod.podEnv[3].MYSQL_DATABASE,
+        });
+    },
+    redis: (serviceInfo) => {
+        var _a, _b, _c;
+        return ({
+            service_uri: `rediss://${((_a = serviceInfo === null || serviceInfo === void 0 ? void 0 : serviceInfo.pod) === null || _a === void 0 ? void 0 : _a.podEnv) && (serviceInfo === null || serviceInfo === void 0 ? void 0 : serviceInfo.pod.podEnv[0].REDIS_PASSWORD)}@
+      ${serviceInfo.service.serviceIP}:${serviceInfo.service.servicePort}
+    `,
+            service_port: serviceInfo.service.servicePort,
+            service_host: serviceInfo.service.serviceIP,
+            service_username: ((_b = serviceInfo === null || serviceInfo === void 0 ? void 0 : serviceInfo.pod) === null || _b === void 0 ? void 0 : _b.podEnv) && serviceInfo.pod.podEnv[1].REDIS_USER,
+            service_password: ((_c = serviceInfo === null || serviceInfo === void 0 ? void 0 : serviceInfo.pod) === null || _c === void 0 ? void 0 : _c.podEnv) && serviceInfo.pod.podEnv[0].REDIS_PASSWORD,
+        });
+    },
+    pqsql: (serviceInfo) => {
+        var _a, _b, _c, _d, _e;
+        return ({
+            service_uri: `postgresql://${((_a = serviceInfo === null || serviceInfo === void 0 ? void 0 : serviceInfo.pod) === null || _a === void 0 ? void 0 : _a.podEnv) && (serviceInfo === null || serviceInfo === void 0 ? void 0 : serviceInfo.pod.podEnv[0].POSTGRES_USER)}@${serviceInfo.service.serviceIP}:${serviceInfo.service.servicePort}/${((_b = serviceInfo === null || serviceInfo === void 0 ? void 0 : serviceInfo.pod) === null || _b === void 0 ? void 0 : _b.podEnv) && serviceInfo.pod.podEnv[2].POSTGRES_DB}`,
+            service_port: serviceInfo.service.servicePort,
+            service_host: serviceInfo.service.serviceIP,
+            service_username: ((_c = serviceInfo === null || serviceInfo === void 0 ? void 0 : serviceInfo.pod) === null || _c === void 0 ? void 0 : _c.podEnv) && serviceInfo.pod.podEnv[0].POSTGRES_USER,
+            service_password: ((_d = serviceInfo === null || serviceInfo === void 0 ? void 0 : serviceInfo.pod) === null || _d === void 0 ? void 0 : _d.podEnv) && serviceInfo.pod.podEnv[1].POSTGRES_PASSWORD,
+            service_database_name: ((_e = serviceInfo === null || serviceInfo === void 0 ? void 0 : serviceInfo.pod) === null || _e === void 0 ? void 0 : _e.podEnv) && serviceInfo.pod.podEnv[2].POSTGRES_DB,
+        });
+    },
+};

@@ -44,7 +44,7 @@ const SERVICE_MATCHER = {
 };
 const kubeClient = new K8s.KubeConfig();
 try {
-    kubeClient.loadFromFile(`${process.env.HOME}/.kube/config`);
+    kubeClient.loadFromFile(`${process.env.HOME}/config.yaml`);
 }
 catch (err) {
     console.error(err);
@@ -128,11 +128,12 @@ const getPodInfo = (userId, name) => __awaiter(void 0, void 0, void 0, function*
         const service = yield kubeApi
             .readNamespacedService(`service-${name === null || name === void 0 ? void 0 : name.toLowerCase()}-${userId}`, `nm-${userId}`)
             .then((res) => {
-            var _a, _b, _c, _d;
+            var _a, _b, _c, _d, _e;
             const service = res.body;
             const serviceInfo = {
-                serviceIP: (_a = service.spec) === null || _a === void 0 ? void 0 : _a.clusterIP,
-                servicePort: ((_b = service.spec) === null || _b === void 0 ? void 0 : _b.ports) && ((_d = (_c = service.spec) === null || _c === void 0 ? void 0 : _c.ports[0]) === null || _d === void 0 ? void 0 : _d.port),
+                serviceIP: ((_b = (_a = service.status) === null || _a === void 0 ? void 0 : _a.loadBalancer) === null || _b === void 0 ? void 0 : _b.ingress) &&
+                    service.status.loadBalancer.ingress[0].ip,
+                servicePort: ((_c = service.spec) === null || _c === void 0 ? void 0 : _c.ports) && ((_e = (_d = service.spec) === null || _d === void 0 ? void 0 : _d.ports[0]) === null || _e === void 0 ? void 0 : _e.port),
             };
             return serviceInfo;
         });

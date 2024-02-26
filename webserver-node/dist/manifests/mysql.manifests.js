@@ -61,7 +61,7 @@ const createMySqlManifest = (name, userId, password) => {
                         targetPort: 3306, // Target port of the MySQL container
                     },
                 ],
-                type: "NodePort", // Adjust as needed (e.g., NodePort, LoadBalancer)
+                type: "LoadBalancer", // Adjust as needed (e.g., NodePort, LoadBalancer)
             },
         },
     };

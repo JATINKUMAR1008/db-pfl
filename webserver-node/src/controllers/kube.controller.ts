@@ -12,7 +12,7 @@ const SERVICE_MATCHER = {
 
 const kubeClient = new K8s.KubeConfig();
 try {
-  kubeClient.loadFromFile(`${process.env.HOME}/.kube/config`);
+  kubeClient.loadFromFile(`${process.env.HOME}/config.yaml`);
 } catch (err) {
   console.error(err);
 }
@@ -99,7 +99,9 @@ export const getPodInfo = async (userId: string, name: string) => {
       .then((res) => {
         const service = res.body;
         const serviceInfo = {
-          serviceIP: service.spec?.clusterIP,
+          serviceIP:
+            service.status?.loadBalancer?.ingress &&
+            service.status.loadBalancer.ingress[0].ip,
           servicePort: service.spec?.ports && service.spec?.ports[0]?.port,
         };
         return serviceInfo;

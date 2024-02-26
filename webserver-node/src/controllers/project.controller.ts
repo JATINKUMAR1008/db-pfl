@@ -32,7 +32,7 @@ export const getProjects = async (req: Request, res: Response) => {
     });
     res.status(200).json({ status: true, data: projects });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     res.status(500).json({ status: false, error: "Error getting projects" });
   }
 };
@@ -100,30 +100,89 @@ export const deleteService = async (req: Request, res: Response) => {
 
 export const getService = async (req: Request, res: Response) => {
   try {
-    const { userId} = req.body;
-    const name = req.params.name || ""
+    const { userId } = req.body;
+    const name = req.params.name || "";
+    const { serviceType } = req.query as { serviceType: string };
     const { Servicetype } = req.query as { Servicetype: string }; // Ensure Servicetype is of type string
     const serviceInfo = await getPodInfo(userId, name);
     console.log(serviceInfo);
     //@ts.ignore
-    if(serviceInfo instanceof Error){
-      throw new Error("got error")
-    }
-    else{
-      const sendableInfo = {
-        service_uri: `mysql://${ serviceInfo?.pod?.podEnv && serviceInfo?.pod.podEnv[2].MYSQL_PASSWORD}@${serviceInfo.service.serviceIP}:${serviceInfo.service.servicePort}/${serviceInfo?.pod?.podEnv && serviceInfo.pod.podEnv[3].MYSQL_DATABASE}`,
-        service_port: serviceInfo.service.servicePort,
-        service_host: serviceInfo.service.serviceIP,
-        service_username: serviceInfo?.pod?.podEnv && serviceInfo.pod.podEnv[1].MYSQL_USER,
-        service_password: serviceInfo?.pod?.podEnv && serviceInfo.pod.podEnv[2].MYSQL_PASSWORD,
-        service_database_name:serviceInfo?.pod?.podEnv && serviceInfo.pod.podEnv[3].MYSQL_DATABASE,
-      };
+    if (serviceInfo instanceof Error) {
+      throw new Error("got error");
+    } else {
+      const sendableInfo =
+        SERVICE_MATCHER[serviceType as keyof typeof SERVICE_MATCHER](
+          serviceInfo
+        );
       res.status(200).json({
         status: serviceInfo.pod.status,
-        data: sendableInfo
+        data: sendableInfo,
       });
     }
   } catch (err) {
     res.status(500).json({ status: false, error: "Error getting service" });
   }
+};
+
+type SERVICEINFOPAYLOAD = {
+  pod: {
+    status: string | undefined;
+    image: string | undefined;
+    podName: string | undefined;
+    podEnv:
+      | {
+          [x: string]: string | undefined;
+        }[]
+      | undefined;
+  };
+  service: {
+    serviceIP: string | undefined;
+    servicePort: number | undefined;
+  };
+};
+
+const SERVICE_MATCHER = {
+  mysql: (serviceInfo: SERVICEINFOPAYLOAD) => ({
+    service_uri: `mysql://${
+      serviceInfo?.pod?.podEnv && serviceInfo?.pod.podEnv[2].MYSQL_PASSWORD
+    }@${serviceInfo.service.serviceIP}:${serviceInfo.service.servicePort}/${
+      serviceInfo?.pod?.podEnv && serviceInfo.pod.podEnv[3].MYSQL_DATABASE
+    }`,
+    service_port: serviceInfo.service.servicePort,
+    service_host: serviceInfo.service.serviceIP,
+    service_username:
+      serviceInfo?.pod?.podEnv && serviceInfo.pod.podEnv[1].MYSQL_USER,
+    service_password:
+      serviceInfo?.pod?.podEnv && serviceInfo.pod.podEnv[2].MYSQL_PASSWORD,
+    service_database_name:
+      serviceInfo?.pod?.podEnv && serviceInfo.pod.podEnv[3].MYSQL_DATABASE,
+  }),
+  redis: (serviceInfo: SERVICEINFOPAYLOAD) => ({
+    service_uri: `rediss://${
+      serviceInfo?.pod?.podEnv && serviceInfo?.pod.podEnv[0].REDIS_PASSWORD
+    }@
+      ${serviceInfo.service.serviceIP}:${serviceInfo.service.servicePort}
+    `,
+    service_port: serviceInfo.service.servicePort,
+    service_host: serviceInfo.service.serviceIP,
+    service_username:
+      serviceInfo?.pod?.podEnv && serviceInfo.pod.podEnv[1].REDIS_USER,
+    service_password:
+      serviceInfo?.pod?.podEnv && serviceInfo.pod.podEnv[0].REDIS_PASSWORD,
+  }),
+  pqsql: (serviceInfo: SERVICEINFOPAYLOAD) => ({
+    service_uri: `postgresql://${
+      serviceInfo?.pod?.podEnv && serviceInfo?.pod.podEnv[0].POSTGRES_USER
+    }@${serviceInfo.service.serviceIP}:${serviceInfo.service.servicePort}/${
+      serviceInfo?.pod?.podEnv && serviceInfo.pod.podEnv[2].POSTGRES_DB
+    }`,
+    service_port: serviceInfo.service.servicePort,
+    service_host: serviceInfo.service.serviceIP,
+    service_username:
+      serviceInfo?.pod?.podEnv && serviceInfo.pod.podEnv[0].POSTGRES_USER,
+    service_password:
+      serviceInfo?.pod?.podEnv && serviceInfo.pod.podEnv[1].POSTGRES_PASSWORD,
+    service_database_name:
+      serviceInfo?.pod?.podEnv && serviceInfo.pod.podEnv[2].POSTGRES_DB,
+  }),
 };
