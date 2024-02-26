@@ -189,31 +189,34 @@ const RenderServiceInfo = ({
   });
   return (
     <>
-      {SERVICE_INFO_KEYS.map((key, index) => (
-        <div
-          className={
-            index === SERVICE_INFO_KEYS.length - 1
-              ? "w-full grid grid-cols-3 py-3 px-3"
-              : "w-full grid grid-cols-3 py-3 px-3 border-b"
-          }
-          key={index}
-        >
-          <div className="w-full col-span-1">
-            <p className="text-gray-700 text-md font-[500]">{key.desc}</p>
-          </div>
-          <div className="w-full col-span-2 flex justify-between items-center">
-            <p className="text-gray-600 ">{data?.data?.data[key.key]}</p>
-            <LuClipboard
-              size={20}
-              className="text-gray-400 cursor-pointer"
-              onClick={() => {
-                navigator.clipboard.writeText(data?.data?.data[key.key]);
-                toast.success("Copied to clipboard");
-              }}
-            />
-          </div>
-        </div>
-      ))}
+      {SERVICE_INFO_KEYS.map(
+        (key, index) =>
+          data?.data?.data[key.key] && (
+            <div
+              className={
+                index === SERVICE_INFO_KEYS.length - 1
+                  ? "w-full grid grid-cols-3 py-3 px-3"
+                  : "w-full grid grid-cols-3 py-3 px-3 border-b"
+              }
+              key={index}
+            >
+              <div className="w-full col-span-1">
+                <p className="text-gray-700 text-md font-[500]">{key.desc}</p>
+              </div>
+              <div className="w-full col-span-2 flex justify-between items-center">
+                <p className="text-gray-600 ">{data?.data?.data[key.key]}</p>
+                <LuClipboard
+                  size={20}
+                  className="text-gray-400 cursor-pointer"
+                  onClick={() => {
+                    navigator.clipboard.writeText(data?.data?.data[key.key]);
+                    toast.success("Copied to clipboard");
+                  }}
+                />
+              </div>
+            </div>
+          )
+      )}
     </>
   );
 };
