@@ -13,7 +13,7 @@ const SERVICE_MATCHER = {
 
 const kubeClient = new K8s.KubeConfig();
 try {
-  kubeClient.loadFromFile(path.join(__dirname, 'kubeconfig.yaml'));
+  kubeClient.loadFromFile(`${process.env.HOME}/config.yaml`);
 } catch (err) {
   console.error(err);
 }
