@@ -183,7 +183,7 @@ const RenderServiceInfo = ({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name }),
+        body: JSON.stringify({ name, serviceType }),
       }).then((res) => res.json());
     },
   });
