@@ -96,7 +96,9 @@ export default function CreateNewTypeService({
     console.log(res);
     setLoading(false);
   };
-  return serviceType === "mysql" || "pqsql" || "redis" ? (
+  return serviceType === "mysql" ||
+    serviceType === "pqsql" ||
+    serviceType === "redis" ? (
     <div className="max-w-[1500px] w-full m-auto h-full">
       <div className="flex flex-row items-start w-full gap-2">
         <div className="w-full">
